@@ -1,0 +1,29 @@
+{
+  "name": "the-clusternator-runtime-aws",
+  "version": "0.0.1",
+  "description": "The Clusternator's CI runtime for AWS backed clusternations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rangle/the-clusternator-runtime-aws.git"
+  },
+  "keywords": [
+    "clusternator",
+    "ci",
+    "cd",
+    "deployment",
+    "testing"
+  ],
+  "author": "Rangle.io",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rangle/the-clusternator-runtime-aws/issues"
+  },
+  "homepage": "https://github.com/rangle/the-clusternator-runtime-aws#readme",
+  "dependencies": {
+    "aws-sdk": "^2.2.41"
+  }
+}
