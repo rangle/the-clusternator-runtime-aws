@@ -10,7 +10,8 @@ const SSH_PUBLIC = 'ssh-public';
 const fs = require('fs');
 const path = require('path');
 const AWS = require('aws-sdk');
-const spawn = require('child_process').spawn;
+const log = require('./log').log;
+const cli = require('./child-processes');
 const notify = require('./notify');
 
 module.exports = {
@@ -43,7 +44,7 @@ function main(host, deploymentInfo) {
     })
     .then(() => process.exit(0))
     .catch((err) => {
-      console.log(`Docker Build Error: ${err.message}`);
+      log(`Docker Build Error: ${err.message}`);
       process.exit(1);
     });
 
@@ -76,7 +77,7 @@ function readFile(path) {
 /**
  * Loads _all_ the contents of a given path, it assumes they're public keys
  * @param {string} keyPath
- * @returns {Q.Promise<string[]>}
+ * @returns {Promise<string[]>}
  */
 function loadUserPublicKeys(keyPath) {
   return ls(keyPath)
@@ -144,9 +145,7 @@ function decodeToken(data) {
 function login(data) {
   const decoded = decodeToken(data);
   const end = data.proxyEndpoint;
-  const args = [
-    'login', '-u', decoded.user, '-p', decoded.token, '-e', 'none', end];
-  return spawnOutput(DOCKER_CMD, args);
+  return cli.docker.login(decoded.user, decoded.token, end);
 }
 
 
@@ -160,7 +159,7 @@ function safeReq(path, label) {
   try {
     return require(path);
   } catch (err) {
-    console.log(`Error loading ${label}: ${err.message}`);
+    log(`Error loading ${label}: ${err.message}`);
     process.exit(3);
   }
 }
@@ -194,31 +193,6 @@ function getAwsConfig(privatePath) {
 }
 
 /**
- * @param {string} command
- * @param {Array} args
- * @returns {Promise}
- */
-function spawnOutput(command, args) {
-  args = Array.isArray(args) ? args : [];
-  const child = spawn(command, args, { env: process.env });
-  let err = '';
-  child.stdout.setEncoding('utf8');
-  child.stderr.setEncoding('utf8');
-  child.stdout.on('data', (data) => console.log(data));
-  child.stderr.on('data', (data) => err += data);
-
-  return new Promise((resolve, reject) => {
-    child.on('close', (code) => {
-      if (+code) {
-        reject(new Error(`${err} code: ${code}`));
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
-/**
  * @param {string} endPoint
  * @returns {string}
  */
@@ -240,7 +214,7 @@ function makeFullName(endPoint, imageName) {
  */
 function dockerTag(endPoint, imageName) {
   const target = makeFullName(endPoint, imageName);
-  return spawnOutput(DOCKER_CMD, ['tag', imageName, target])
+  return cli.docker.tag(imageName, target)
     .then(() => target);
 }
 
@@ -249,7 +223,7 @@ function dockerTag(endPoint, imageName) {
  * @returns {Promise}
  */
 function dockerPush(fullImageName) {
-  return spawnOutput(DOCKER_CMD, ['push', fullImageName]);
+  return cli.docker.push(fullImageName);
 }
 
 /**
@@ -259,7 +233,7 @@ function dockerPush(fullImageName) {
 function dockerBuild(imageName) {
   const cwd = process.cwd();
   process.chdir(path.join(__dirname, '..'));
-  return spawnOutput(DOCKER_CMD, ['build', '-t', imageName, './'])
+  return cli.docker.build(imageName, './')
     .then(() => process.chdir(cwd));
 }
 
@@ -267,7 +241,16 @@ function dockerBuild(imageName) {
  * @returns {Promise}
  */
 function decrypt() {
-  return spawnOutput(path.join(__dirname, 'decrypt.sh'), []);
+  const tarball = 'clusternator.tar.gz';
+  const eTarball = tarball + '.asc';
+  const pPhrase = process.env.CLUSTERNATOR_SHARED_KEY;
+
+  return cli.ls(eTarball)
+    .then(() => cli.gpg
+      .decryptWithPassphrase(pPhrase, tarball, eTarball)
+      .then(() => cli.tar.extractGz(tarball)
+        .then(() => cli.rm(tarball))),
+      () => log('Nothing to decrypt, skipping'));
 }
 
 /**
@@ -275,6 +258,6 @@ function decrypt() {
  * @returns {Promise}
  */
 function wipePrivate(privatePath) {
-  return spawnOutput('rm', ['-rf', privatePath]);
+  return cli.rm.rf(privatePath);
 }
 

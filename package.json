@@ -4,7 +4,7 @@
   "description": "The Clusternator's CI runtime for AWS backed clusternations",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover _mocha --R ./src"
+    "test": "istanbul cover _mocha --R ./src ./src/**/*.js"
   },
   "repository": {
     "type": "git",
@@ -34,8 +34,11 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "eslint": "^2.4.0",
     "istanbul": "^0.4.2",
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "mock-spawn": "^0.2.6",
+    "rewire": "^2.5.1"
   },
   "eslintConfig": {
     "env": {

@@ -1,6 +1,7 @@
 'use strict';
 
 const dockerBuild = require('./docker-build');
+const log = require('./log');
 
 module.exports = {
   main
@@ -40,7 +41,7 @@ function getDeploymentInfo(pos) {
   return {
     PATH,
     DEPLOYMENT
-  }
+  };
 }
 
 /**
@@ -52,10 +53,9 @@ function getHost(pos) {
 }
 
 function usage() {
-  console.log('');
-  console.log(`Usage: ${process.argv[0]} <host> <deploymentType> ` +
-    '[<deploymentName>]');
-  console.log('');
+  log('');
+  log(`Usage: ${process.argv[0]} <host> <deploymentType> [<deploymentName>]`);
+  log('');
 }
 
 function main_() {
@@ -63,7 +63,7 @@ function main_() {
   const host = getHost(2);
 
   if (!host) {
-    console.log('Invalid Host:', process.argv[2]);
+    log('Invalid Host:', process.argv[2]);
     usage();
     process.exit(1);
   }
@@ -76,8 +76,8 @@ function main() {
     main_();
   } catch (err) {
     usage();
-    console.log('');
-    console.log(err.message);
-    console.log('');
+    log('');
+    log(err.message);
+    log('');
   }
 }

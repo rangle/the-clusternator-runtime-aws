@@ -1,0 +1,43 @@
+'use strict';
+
+const rewire = require('rewire');
+const docker = rewire('./docker');
+const C = require('./../chai');
+
+/*global describe, it, expect, beforeEach, afterEach */
+describe('Docker CLI Wrapper', () => {
+  let oldSpawn;
+  let spawnCount;
+
+  beforeEach(() => {
+    spawnCount = 0;
+    oldSpawn = docker.__get__('spawn');
+    docker.__set__('spawn', () => spawnCount += 1);
+  });
+
+  afterEach(() => {
+    docker.__set__('spawn', oldSpawn);
+  });
+
+  describe('build function', () => {
+    it('should call spawn once', () => {
+      docker.build('rafkhan/testImage', './');
+      expect(spawnCount).to.equal(1);
+    });
+  });
+
+  describe('tag function', () => {
+    it('should call spawn once', () => {
+      docker.tag('image', 'dest');
+      expect(spawnCount).to.equal(1);
+    });
+  });
+
+  describe('push function', () => {
+    it('should call spawn once', () => {
+      docker.push('imageName');
+      expect(spawnCount).to.equal(1);
+    });
+  });
+
+});
