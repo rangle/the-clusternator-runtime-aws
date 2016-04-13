@@ -1,17 +1,13 @@
-'use strict';
 /**
  * @module spawn
  */
 
-/** this is not a constant for unit testing purposes */
-let spawn = require('child_process').spawn;
-
 /** @type {function(...)} */
-const log = require('./../log').log;
+import  * as logger from '../log';
+import * as childProcess from 'child_process';
 
-module.exports = {
-  log: logOutput
-};
+const log = logger.log;
+
 
 /**
  * @param {string} command
@@ -39,8 +35,7 @@ function successString(command, args, code) {
  * @param {string=} stderr
  * @returns {string}
  */
-function failString(command, args, code, stderr) {
-  stderr = stderr || '';
+function failString(command, args, code, stderr = '') {
   return `${commandStr(command, args)} terminated with exit code: ${code} ` +
     stderr;
 }
@@ -52,13 +47,12 @@ function failString(command, args, code, stderr) {
  * @param {string=} stderr
  * @returns {Error}
  */
-function failError(command, args, code, stderr) {
+function failError(command, args, code, stderr = '') {
   log('Failed: ', command, args, code, stderr);
 
-  code = parseInt(code, 10);
-  stderr = stderr || '';
+  const numericCode = parseInt(code, 10);
 
-  const errString = failString(command, args, code, stderr);
+  const errString = failString(command, args, numericCode, stderr);
   const e = new Error(errString);
   e.code = code;
 
@@ -72,11 +66,9 @@ function failError(command, args, code, stderr) {
  * @param {Object=} opts
  * @returns {Promise}
  */
-function logOutput(command, args, opts) {
+export function output(command, args = [], opts = {}) {
   const options = Object.assign({}, opts);
-  const child = spawn(command, args, options);
-
-  args = args || [];
+  const child = childProcess.spawn(command, args, options);
 
   child.stdout.setEncoding('utf8');
   child.stderr.setEncoding('utf8');
@@ -101,5 +93,4 @@ function logOutput(command, args, opts) {
 
     child.stdin.end();
   });
-
 }

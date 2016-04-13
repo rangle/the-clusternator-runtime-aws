@@ -1,11 +1,5 @@
-'use strict';
-
-let spawn = require('./spawn').output;
+import * as spawn from './spawn';
 const CMD = 'gpg';
-
-module.exports = {
-  decryptWithPassphrase
-};
 
 /**
  * @param {string} passphrase
@@ -13,10 +7,11 @@ module.exports = {
  * @param {string} inputFilePath
  * @returns {Promise}
  */
-function decryptWithPassphrase(passphrase, outputFilePath, inputFilePath) {
-  return spawn(CMD, [
+export function decryptWithPassphrase(
+  passphrase, outputFilePath, inputFilePath) {
+  return spawn.output(CMD, [
     'passphrase', passphrase,
-    'output', outputFilePath,
-    'decrypt', inputFilePath
+    'spawn.output', outputFilePath,
+    'decrypt', inputFilePath,
   ]);
 }

@@ -1,16 +1,10 @@
-'use strict';
-
-let spawn = require('./spawn').output;
+import * as spawn from './spawn';
 const CMD = 'tar';
-
-module.exports = {
-  extractGz
-};
 
 /**
  * @param {string} tarballPath
  * @returns {Promise}
  */
-function extractGz(tarballPath) {
-  return spawn(CMD, ['xfz', tarballPath]);
+export function extractGz(tarballPath) {
+  return spawn.output(CMD, ['xfz', tarballPath]);
 }

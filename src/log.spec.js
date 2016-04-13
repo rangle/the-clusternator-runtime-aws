@@ -1,9 +1,7 @@
-'use strict';
+import './chai';
+import * as log from './log';
 
-const log = require('./log');
-const C = require('./chai');
-
-/*global describe, it, expect, beforeEach, afterEach */
+/* global describe, it, expect, beforeEach, afterEach */
 describe('Test log module', () => {
   describe('log function', () => {
     expect(() => log.log('hello', 'there', { a: 'dood' })).not.to.throw(Error);

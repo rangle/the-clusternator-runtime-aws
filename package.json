@@ -4,7 +4,14 @@
   "description": "The Clusternator's CI runtime for AWS backed clusternations",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover _mocha --R ./src ./src/**/*.js"
+    "build": "npm run clean; npm run test",
+    "clean": "rimraf ./lib",
+    "cover": "istanbul cover _mocha -- --recursive ./lib",
+    "lint": "eslint .",
+    "preprublish": "npm run build",
+    "test": "npm run lint; npm run clean; npm run transpile; npm run cover",
+    "transpile": "tsc",
+    "transpile:w": "tsc:w"
   },
   "repository": {
     "type": "git",
@@ -20,7 +27,7 @@
   "author": "Rangle.io",
   "license": "MIT",
   "bin": {
-    "clusternator-runtime-aws": "./bin/clusternator.sh"
+    "clusternator-runtime-aws": "./bin/clusternator-runtime-aws.sh"
   },
   "bugs": {
     "url": "https://github.com/rangle/the-clusternator-runtime-aws/issues"
@@ -34,48 +41,12 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "eslint": "^2.4.0",
+    "eslint": "^2.7.0",
     "istanbul": "^0.4.2",
     "mocha": "^2.4.5",
     "mock-spawn": "^0.2.6",
-    "rewire": "^2.5.1"
-  },
-  "eslintConfig": {
-    "env": {
-      "node": true,
-      "es6": true
-    },
-    "ecmaFeatures": {
-      "generators": true
-    },
-    "rules": {
-      "comma-dangle": 0,
-      "max-len": [
-        1,
-        80,
-        4
-      ],
-      "no-console": 2,
-      "no-func-assign": 2,
-      "no-multi-spaces": 0,
-      "no-undef": 2,
-      "no-underscore-dangle": 0,
-      "no-unreachable": 2,
-      "no-var": 2,
-      "new-cap": 0,
-      "one-var": [
-        2,
-        "never"
-      ],
-      "quotes": [
-        1,
-        "single"
-      ],
-      "semi": [
-        2,
-        "always"
-      ],
-      "valid-typeof": 2
-    }
+    "rewire": "^2.5.1",
+    "rimraf": "^2.5.2",
+    "typescript": "^1.8.9"
   }
 }

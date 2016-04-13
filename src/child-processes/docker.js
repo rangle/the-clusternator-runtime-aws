@@ -1,22 +1,13 @@
-'use strict';
-
-let spawn = require('./spawn').output;
+import * as spawn from './spawn';
 const CMD = 'docker';
-
-module.exports = {
-  build,
-  login,
-  push,
-  tag
-};
 
 /**
  * @param {string} imageTag
  * @param {string} path
  * @returns {Promise}
  */
-function build(imageTag, path) {
-  return spawn(CMD, ['build', '-t', imageTag, path]);
+export function build(imageTag, path) {
+  return spawn.output(CMD, ['build', '-t', imageTag, path]);
 }
 
 /**
@@ -25,16 +16,18 @@ function build(imageTag, path) {
  * @param {string} endPoint
  * @returns {Promise}
  */
-function login(user, token, endPoint) {
-  return spawn(CMD, ['login', '-u', user, '-p', token, '-e', 'none', endPoint]);
+export function login(user, token, endPoint) {
+  return spawn.output(CMD, [
+    'login', '-u', user, '-p', token, '-e', 'none', endPoint,
+  ]);
 }
 
 /**
  * @param {string} fullImageName
  * @returns {Promise}
  */
-function push(fullImageName) {
-  return spawn(CMD, ['push', fullImageName]);
+export function push(fullImageName) {
+  return spawn.output(CMD, ['push', fullImageName]);
 }
 
 /**
@@ -42,6 +35,6 @@ function push(fullImageName) {
  * @param {string} target
  * @returns {Promise}
  */
-function tag(image, target) {
-  return spawn(CMD, ['tag', image, target]);
+export function tag(image, target) {
+  return spawn.output(CMD, ['tag', image, target]);
 }

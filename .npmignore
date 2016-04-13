@@ -1,0 +1,7 @@
+.eslintignore
+.eslintrc
+.gitignore
+.npmignore
+.tsconfig.json
+coverage/
+src/

@@ -1,26 +1,19 @@
-'use strict';
 /**
  * These functions are used as helpers for unit tests
  * @module chai
  */
-
-let chai = require('chai');
+import * as chai from 'chai';
 
 chai.config.includeStack = true;
 
 global.expect = chai.expect;
 
-module.exports = {
-  check,
-  getFail
-};
-
-/*global describe, it, expect, beforeEach, afterEach */
+/* global describe, it, expect, beforeEach, afterEach */
 /**
   @param {function(...)} done
   @param {function(...)} fn
 */
-function check(done, fn) {
+export function check(done, fn) {
   try {
     fn();
     done();
@@ -31,16 +24,15 @@ function check(done, fn) {
 
 /**
   @param {function(...)} done
-  @return {function(...)}
+  @return {function(Error|*)}
 */
-function getFail(done) {
-  function fail(err) {
-      if (err instanceof Error) {
-        done(err);
-      } else {
-        done(new Error('this case should not happen'));
-      }
-  }
-  return fail;
+export function getFail(done) {
+  return (err) => {
+    if (err instanceof Error) {
+      done(err);
+    } else {
+      done(new Error('this case should not happen'));
+    }
+  };
 }
 

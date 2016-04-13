@@ -1,5 +1,5 @@
 'use strict';
 
 module.exports = {
-  cli: require('./src/cli')
+  cli: require('./lib/cli')
 };

@@ -1,45 +1,39 @@
-'use strict';
-
-const rewire = require('rewire');
-const mockSpawn = require('mock-spawn');
+import * as C from '../chai';
+import * as rewire from 'rewire';
+import * as mockSpawn from 'mock-spawn';
 
 const child = rewire('./spawn');
-const C = require('./../chai');
 
-/*global describe, it, expect, beforeEach, afterEach */
+/* global describe, it, expect, beforeEach, afterEach */
 describe('Test spawn module', () => {
-  let projectRoot = '/';
-
   beforeEach(() => {
-    projectRoot = '/';
-    child.__set__('spawn', mockSpawn());
+    child.__set__('childProcess', { spawn: mockSpawn() });
   });
 
   afterEach(() => {
-    child.__set__('spawn', require('child_process').spawn);
+    child.__set__('childProcess', { spawn: require('child_process').spawn });
   });
 
-  describe('log function', () => {
+  describe('output function', () => {
     it('should resolve if there are no exit errors', (done) => {
-      child.log('ls')
+      child.output('ls')
         .then(() => C
           .check(done, () => expect(true).to.be.ok))
         .catch(C.getFail(done));
     });
 
     describe('cases with exit code', () => {
-
       beforeEach(() => {
         const ms = mockSpawn();
         const runner = ms.simple(1, '');
 
         runner.stderr = 'test error';
         ms.setDefault(runner);
-        child.__set__('spawn', ms);
+        child.__set__('childProcess', { spawn: ms });
       });
 
       it('should reject if there are exit errors', (done) => {
-        child.log()
+        child.output()
           .then(C.getFail(done))
           .catch((err) => C
             .check(done, () => expect(err instanceof Error).to.be.ok));
@@ -47,7 +41,6 @@ describe('Test spawn module', () => {
     });
 
     describe('cases with stdout', () => {
-
       beforeEach(() => {
         const ms = mockSpawn();
         const runner = function runner(done) {
@@ -56,19 +49,18 @@ describe('Test spawn module', () => {
         };
 
         ms.setDefault(runner);
-        child.__set__('spawn', ms);
+        child.__set__('childProcess', { spawn: ms });
       });
 
       it('should resolve if there is output and no exit code', (done) => {
-        child.log()
-          .then((result) => C
+        child.output()
+          .then(() => C
             .check(done, () => expect(true).to.be.ok))
-          .catch((err) => C.getFail(done));
+          .catch(C.getFail(done));
       });
     });
 
     describe('cases with stderr', () => {
-
       beforeEach(() => {
         const ms = mockSpawn();
         const runner = function runner(done) {
@@ -78,16 +70,15 @@ describe('Test spawn module', () => {
         };
 
         ms.setDefault(runner);
-        child.__set__('spawn', ms);
+        child.__set__('childProcess', { spawn: ms });
       });
 
       it('should resolve if there is error output and no exit code', (done) => {
-        child.log()
-          .then((result) => C
+        child.output()
+          .then(() => C
             .check(done, () => expect(true).to.be.ok))
-          .catch((err) => C.getFail(done));
+          .catch(C.getFail(done));
       });
     });
-
   });
 });

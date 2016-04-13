@@ -1,9 +1,7 @@
-'use strict';
-
-const rewire = require('rewire');
+import * as rewire from 'rewire';
 const C = rewire('./chai');
 
-/*global describe, it, expect, beforeEach, afterEach */
+/* global describe, it, expect, beforeEach, afterEach */
 describe('Chai Helpers', () => {
   let oldChai;
   let expectCount;
@@ -17,11 +15,11 @@ describe('Chai Helpers', () => {
         return {
           to: {
             be: {
-              ok: 'test ok'
-            }
-          }
+              ok: 'test ok',
+            },
+          },
         };
-      }
+      },
     });
   });
 
@@ -32,13 +30,13 @@ describe('Chai Helpers', () => {
   describe('check function', () => {
     it('should handle functions that return', () => {
       let done = false;
-      C.check(() => done = true, () => 'hello');
+      C.check(() => { done = true; }, () => 'hello');
       expect(done).to.equal(true);
     });
 
     it('should handle functions that throw', () => {
       let done = false;
-      C.check(() => done = true, () => {
+      C.check(() => { done = true; }, () => {
         throw new Error('test');
       });
       expect(done).to.equal(true);
