@@ -4,7 +4,14 @@
   "description": "The Clusternator's CI runtime for AWS backed clusternations",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run clean; npm run test",
+    "clean": "rimraf ./lib",
+    "cover": "istanbul cover _mocha -- --recursive ./lib",
+    "lint": "eslint .",
+    "preprublish": "npm run build",
+    "test": "npm run lint; npm run clean; npm run transpile; npm run cover",
+    "transpile": "tsc",
+    "transpile:w": "tsc:w"
   },
   "repository": {
     "type": "git",
@@ -19,11 +26,27 @@
   ],
   "author": "Rangle.io",
   "license": "MIT",
+  "bin": {
+    "clusternator-runtime-aws": "./bin/clusternator-runtime-aws.sh"
+  },
   "bugs": {
     "url": "https://github.com/rangle/the-clusternator-runtime-aws/issues"
   },
   "homepage": "https://github.com/rangle/the-clusternator-runtime-aws#readme",
+  "os": [
+    "!win32"
+  ],
   "dependencies": {
     "aws-sdk": "^2.2.41"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^2.7.0",
+    "istanbul": "^0.4.2",
+    "mocha": "^2.4.5",
+    "mock-spawn": "^0.2.6",
+    "rewire": "^2.5.1",
+    "rimraf": "^2.5.2",
+    "typescript": "^1.8.9"
   }
 }

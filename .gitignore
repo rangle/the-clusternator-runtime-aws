@@ -13,3 +13,6 @@ coverage
 
 # exclude JetBrains IDE
 .idea
+
+# ignore library versio
+lib/
