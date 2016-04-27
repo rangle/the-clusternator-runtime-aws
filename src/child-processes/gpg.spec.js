@@ -1,5 +1,5 @@
 import '../chai';
-import * as rewire from 'rewire';
+import rewire from 'rewire';
 const gpg = rewire('./gpg');
 
 /* global describe, it, expect, beforeEach, afterEach */

@@ -1,7 +1,9 @@
 import * as constants from './constants';
 import * as runtime from './main';
-import * as log from './log';
+import * as l from './log';
 
+
+const log = l.log;
 
 /**
  * @param {number} pos

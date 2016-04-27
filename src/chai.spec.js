@@ -1,5 +1,6 @@
-import * as rewire from 'rewire';
+import rewire from 'rewire';
 const C = rewire('./chai');
+
 
 /* global describe, it, expect, beforeEach, afterEach */
 describe('Chai Helpers', () => {

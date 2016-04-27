@@ -1,5 +1,5 @@
 import * as C from './chai';
-import * as rewire from 'rewire';
+import rewire from 'rewire';
 
 const notify = rewire('./notify');
 

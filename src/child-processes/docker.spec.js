@@ -1,5 +1,5 @@
 import './../chai';
-import * as rewire from 'rewire';
+import rewire from 'rewire';
 const docker = rewire('./docker');
 
 /* global describe, it, expect, beforeEach, afterEach */

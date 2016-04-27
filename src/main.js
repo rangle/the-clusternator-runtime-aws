@@ -68,9 +68,14 @@ export function run(projectRoot, deployment, isPr) {
       constants.PATH_CREATE_DEPLOYMENT,
   };
 
+  console.log(config); // eslint-disable-line
+
   return setConfigObject(config)
-    .then(() => dockerBuild.main(config))
+    .then((c) => {
+      console.log(c); // eslint-disable-line
+      return dockerBuild.main(config);
+    })
     .then(() => notify(config.appDef, config.projectId,
       config.clusternatorToken, config.fullImageName, config.keys,
-      deploymentPath, deployment, ));
+      deploymentPath, deployment ));
 }
