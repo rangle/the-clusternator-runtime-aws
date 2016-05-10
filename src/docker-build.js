@@ -14,7 +14,7 @@ export function main(config) {
   return getAwsEcrToken(config.credentials, config.registryId)
     .then((tokenObj) => {
       const imageName =
-        buildImageName(config.projectId, config.deploymentInfo.deployment);
+        buildImageName(config.projectId, config.deployment);
       return login(tokenObj)
         .then(() => fileSystem.rmrf(config.privatePath))
         .then(() => dockerBuild(imageName))

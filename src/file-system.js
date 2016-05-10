@@ -115,7 +115,7 @@ export function safeReq(localPath, label) {
  region: string, apiVersion: string }>}
  */
 export function getCredentials(fileName, apiVersion, privatePath, region) {
-  return safeReq(path.join(privatePath, fileName + '.json'), fileName)
+  return readJSON(path.join(privatePath, fileName + '.json'), fileName)
     .then((creds) => {
       creds.secretAccessKey = creds.secretAccessKey || creds.SecretAccessKey;
       creds.accessKeyId = creds.accessKeyId || creds.AccessKeyId;
@@ -132,7 +132,7 @@ export function getCredentials(fileName, apiVersion, privatePath, region) {
  * @returns {Promise.<*>}
  */
 export function getClusternatorToken(tokenFileName, privatePath) {
-  return safeReq(path.join(privatePath, tokenFileName), tokenFileName)
+  return readJSON(path.join(privatePath, tokenFileName), tokenFileName)
       .then((result) => result.token || null);
 }
 
@@ -140,8 +140,9 @@ export function getClusternatorToken(tokenFileName, privatePath) {
  * @param {string} clusternatorFileName
  * @returns {Promise.<*>}
  */
-export function getConfig(clusternatorFileName) {
-  return safeReq(path.join('..', clusternatorFileName), clusternatorFileName);
+export function getConfig(root, clusternatorFileName) {
+  let p = path.resolve(root, clusternatorFileName);
+  return readJSON(p);
 }
 
 /**
@@ -150,7 +151,7 @@ export function getConfig(clusternatorFileName) {
  * @returns {Promise.<*>}
  */
 export function getAwsConfig(awsFileName, privatePath) {
-  return safeReq(path.join(privatePath, awsFileName), awsFileName);
+  return readJSON(path.join(privatePath, awsFileName), awsFileName);
 }
 
 /**
@@ -161,5 +162,18 @@ export function getAwsConfig(awsFileName, privatePath) {
 export function getAppDef(deploymentsDir, deployment) {
   const appDefPath = path.join(deploymentsDir, deployment + '.json');
   return pathExists(appDefPath)
-    .then(() => safeReq(appDefPath));
+    .then(() => readJSON(appDefPath));
+}
+
+export function readJSON(localPath) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(localPath, (err, data) => {
+      let d = JSON.parse(data);
+      if (err) {
+        reject(err);
+      } else {
+        resolve(d);
+      }
+    });
+  });
 }

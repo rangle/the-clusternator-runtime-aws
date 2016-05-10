@@ -210,7 +210,7 @@ describe('File System', () => {
 
     describe('getConfig function', () => {
       it('should resolve if safeReq resolves', (done) => {
-        fileSystem.getConfig('clusternatorJson')
+        fileSystem.getConfig('root', 'clusternatorJson')
           .then((r) => C.check(done, () => expect(r).to.be.ok))
           .catch(C.getFail(done));
       });

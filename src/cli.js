@@ -58,6 +58,16 @@ export function getHost(pos) {
 
 
 /**
+ * @param {number} pos
+ * @returns {string}
+ */
+export function getProjectRoot(pos) {
+  var root = process.argv[pos];
+  return root;
+}
+
+
+/**
  * @param {number} pos expects argsv pos and pos +1
  * @returns {{ DEPLOYMENT: string, isPr: boolean  }}
  */

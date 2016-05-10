@@ -1,6 +1,6 @@
 import * as C from '../chai';
 import rewire from 'rewire';
-import * as mockSpawn from 'mock-spawn';
+import mockSpawn from 'mock-spawn';
 
 const child = rewire('./spawn');
 
