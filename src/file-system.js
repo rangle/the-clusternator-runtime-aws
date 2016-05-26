@@ -81,6 +81,8 @@ export function pathExists(somePath) {
  * @returns {Promise}
  */
 export function decrypt(pathToTarball, pathToTarballEncrypted, passPhrase) {
+  console.log(arguments);
+
   return pathExists(pathToTarballEncrypted)
     .then(() => cli.gpg
       .decryptWithPassphrase(

@@ -16,20 +16,31 @@ export function main(config) {
       const imageName =
         buildImageName(config.projectId, config.deployment);
       return login(tokenObj)
-        .then(() => fileSystem.rmrf(config.privatePath))
-        .then(() => dockerBuild(imageName))
+        .then(() => fileSystem.rmrf(config.private))
+        .then(() => dockerBuild(imageName, config.projectRoot))
         .then(() => dockerTag(tokenObj.proxyEndpoint, imageName))
         .then((fullImageName) => dockerPush(fullImageName)
-          .then(() => decrypt(env.sharedKey))
-          .then(() => fileSystem.loadUserPublicKeys(config.sshPath))
+          .then(() => {
+            return fileSystem.decrypt(constants.TARBALL,
+                                      constants.TARBALL_ENCRYPTED,
+                                      env.sharedKey())
+          })
+          .then(() => {
+            return fileSystem.loadUserPublicKeys(config.sshPath)
+          })
           .then((keys) => {
             config.keys = keys;
             config.fullImageName = fullImageName;
+
+            return {
+              keys,
+              fullImageName
+            };
           }));
     })
-    .then(() => process.exit(0))
     .catch((err) => {
       log(`Docker Build Error: ${err.message}`);
+      log(`Docker Build Error: ${err.stack}`);
       process.exit(1);
     });
 }
@@ -136,10 +147,9 @@ function dockerPush(fullImageName) {
  * @param {string} imageName
  * @return {Promise}
  */
-function dockerBuild(imageName) {
+function dockerBuild(imageName, root) {
   const cwd = process.cwd();
-  process.chdir(path.join(__dirname, '..'));
-  return cli.docker.build(imageName, './')
+  return cli.docker.build(imageName, root)
     .then(() => process.chdir(cwd));
 }
 

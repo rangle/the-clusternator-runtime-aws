@@ -10,8 +10,8 @@ const CMD = 'gpg';
 export function decryptWithPassphrase(
   passphrase, outputFilePath, inputFilePath) {
   return spawn.output(CMD, [
-    'passphrase', passphrase,
-    'spawn.output', outputFilePath,
-    'decrypt', inputFilePath,
+    '--passphrase', passphrase,
+    '--output', outputFilePath,
+    '--decrypt', inputFilePath
   ]);
 }

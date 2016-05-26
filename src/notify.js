@@ -1,9 +1,16 @@
-import * as http from 'https';
+//import * as http from 'https';
+import * as http from 'http';
 import * as constants from './constants';
 import * as logger from './log';
 import * as env from './environment';
 
 const log = logger.log;
+
+
+function substituteAppDefImage(appDef, image) {
+  appDef.tasks[0].containerDefinitions[0].image = image;
+  return appDef;
+}
 
 /**
  * @param {string} appDef
@@ -18,40 +25,47 @@ const log = logger.log;
  */
 export function notify(appDef, projectId, key, image, sshKeys, serverPath,
                        deployment, host) {
-  const clusternatorHost = `the-clusternator.${host}`;
+
+  const clusternatorHost = host;
   const pr = env.prNumber();
   const build = env.buildNumber();
   const repo = projectId;
+  const subbedAppDef = substituteAppDefImage(appDef, image);
 
-  // Build the post string from an object
-  const data = JSON.stringify({
+  const dataObj = {
     pr,
     deployment,
     build,
     repo,
-    image,
     sshKeys,
-    appDef,
-  });
+    appDef
+  };
+
+  // Build the post string from an object
+  const data = JSON.stringify(dataObj);
 
   return post(data, key, serverPath, clusternatorHost);
 }
 
 export function post(data, auth, serverPath, clusternatorHost) {
+
   // An object of options to indicate where to post to
   const postOptions = {
     host: clusternatorHost,
-    port: constants.PORT,
+    //port: constants.PORT,
+    port: 9090,
     path: serverPath,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Content-Length': Buffer.byteLength(data),
       'Authorization': 'Token ' + auth,
-    },
+    }
   };
 
   log('Posting To:', clusternatorHost);
+  log('Posting with options:', postOptions);
+
   return new Promise((resolve, reject) => {
     // Set up the request
     const postReq = http.request(postOptions, (res) => {
@@ -60,7 +74,11 @@ export function post(data, auth, serverPath, clusternatorHost) {
         log('Response: ' + chunk);
         resolve();
       });
-      res.on('error', reject);
+
+      res.on('error', (err) => {
+        log('Error response:', err);
+        reject();
+      });
     });
 
     // post the data

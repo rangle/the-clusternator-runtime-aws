@@ -1,5 +1,5 @@
 import * as spawn from './spawn';
-const CMD = 'gpg';
+const CMD = 'rm';
 
 /**
  * @param {string} path

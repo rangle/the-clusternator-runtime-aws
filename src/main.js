@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as constants from './constants';
 import * as fileSystem from './file-system';
 import * as dockerBuild from './docker-build';
-const notify = require('./notify');
+import * as notify from './notify';
 
 const localizePath = (given) => path.normalize('./' + given);
 
@@ -46,11 +46,15 @@ export function setConfigObject(config) {
                               constants.CLUSTERNATOR_FILE)
     .then((c) => {
 
+      //maybe just copy all of c?
+      //
       let priv = localizePath(c.private);
       config.private = priv;
 
       let deploymentsDir = localizePath(c.deploymentsDir);
       config.deploymentsDir = deploymentsDir;
+
+      config.projectId = c.projectId;
 
       return Promise.all([
         fileSystem.getAwsConfig(constants.AWS_FILE, priv),
@@ -71,7 +75,7 @@ export function setConfigObject(config) {
             constants.CLUSTERNATOR_TOKEN, config.private)
         })
         .then((token) => {
-          config.tokenObj = token; // is this necessary?
+          config.clusternatorToken = token; // is this necessary?
           //return assignCredentialResults(config, credentials, token);
         })
         .then(() => {
@@ -103,17 +107,21 @@ export function run(projectRoot, host, deployment, isPr) {
       constants.PATH_CREATE_DEPLOYMENT,
   };
 
+  console.log('path', config.deploymentPath, isPr);
+
   return setConfigObject(config)
     .then((c) => {
       console.log('FINAL CONFIG', c); // eslint-disable-line
-      return dockerBuild.main(config)
+      return dockerBuild.main(c)
         .then((d) => {
-          console.log(d);
-          return notify(c.appDef, c.projectId,
-            c.clusternatorToken, c.fullImageName, c.keys,
-            deploymentPath, deployment);
+          return notify.notify(c.appDef, c.projectId,
+            c.clusternatorToken, d.fullImageName, d.keys,
+            c.deploymentPath, c.deployment, c.host);
         });
+
     }, (err) => {
       console.log('err', err.stack); // eslint-disable-line
-    });
+    })
+            .then((v) => console.log(v),
+                  (e) => console.log('e', e.stack));
 }

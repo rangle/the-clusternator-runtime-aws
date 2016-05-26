@@ -7,7 +7,9 @@ const CMD = 'docker';
  * @returns {Promise}
  */
 export function build(imageTag, path) {
-  return spawn.output(CMD, ['build', '-t', imageTag, path]);
+  return spawn.output(CMD, ['build', '-t', imageTag, path], {
+    cwd: path
+  });
 }
 
 /**
