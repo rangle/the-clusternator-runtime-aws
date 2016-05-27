@@ -38,7 +38,8 @@ export function notify(appDef, projectId, key, image, sshKeys, serverPath,
     build,
     repo,
     sshKeys,
-    appDef
+
+    appDef: subbedAppDef
   };
 
   // Build the post string from an object
