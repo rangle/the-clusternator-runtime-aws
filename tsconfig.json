@@ -1,0 +1,21 @@
+{
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "compilerOptions": {
+    "allowJs": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es5",
+    "removeComments": false,
+    "sourceMap": true,
+    "outDir": "lib",
+    "rootDir": "src"
+  },
+  "exclude": [
+    "bin",
+    "coverage",
+    "index.js",
+    "lib",
+    "node_modules"
+  ]
+}
