@@ -1,5 +1,5 @@
-//import * as http from 'https';
-import * as http from 'http';
+import * as http from 'https';
+//import * as http from 'http';
 import * as constants from './constants';
 import * as logger from './log';
 import * as env from './environment';
@@ -53,8 +53,8 @@ export function post(data, auth, serverPath, clusternatorHost) {
   // An object of options to indicate where to post to
   const postOptions = {
     host: clusternatorHost,
-    //port: constants.PORT,
-    port: 9090,
+    port: constants.PORT,
+    //port: 9090,
     path: serverPath,
     method: 'POST',
     headers: {
