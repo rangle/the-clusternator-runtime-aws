@@ -1,6 +1,6 @@
 {
   "name": "the-clusternator-runtime-aws",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "The Clusternator's CI runtime for AWS backed clusternations",
   "main": "index.js",
   "scripts": {
