@@ -55,6 +55,8 @@ export function setConfigObject(config) {
       config.deploymentsDir = deploymentsDir;
 
       config.projectId = c.projectId;
+      config.host = c.host;
+
 
       return Promise.all([
         fileSystem.getAwsConfig(constants.AWS_FILE, priv),
@@ -97,9 +99,9 @@ export function setConfigObject(config) {
     });
 }
 
-export function run(projectRoot, host, deployment, isPr) {
+export function run(projectRoot, deployment, isPr) {
   const config = {
-    host,
+    //host,
     projectRoot,
     deployment,
     deploymentPath: isPr ?
