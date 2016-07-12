@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import * as R from 'ramda';
 import * as cli from './child-processes';
 import * as log from './log';
 
@@ -143,8 +144,17 @@ export function getClusternatorToken(tokenFileName, privatePath) {
  * @returns {Promise.<*>}
  */
 export function getConfig(root, clusternatorFileName) {
+  let publicConfig;
   let p = path.resolve(root, clusternatorFileName);
-  return readJSON(p);
+  return readJSON(p)
+    .then((pubConf) => {
+      publicConfig = pubConf;
+      let privatePath = path.resolve(root, publicConfig.private,
+          clusternatorFileName);
+      return readJSON(privatePath);
+    }).then((privateConfig) => {
+      return R.merge(publicConfig, privateConfig);
+    });
 }
 
 /**

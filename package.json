@@ -37,7 +37,8 @@
     "!win32"
   ],
   "dependencies": {
-    "aws-sdk": "^2.2.41"
+    "aws-sdk": "^2.3.16",
+    "ramda": "^0.21.0"
   },
   "devDependencies": {
     "babel-cli": "^6.7.7",

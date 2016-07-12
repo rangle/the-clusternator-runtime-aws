@@ -24,17 +24,17 @@ function usage() {
 }
 
 function main_() {
-  const deploymentInfo = getDeploymentInfo(4);
-  const host = getHost(3);
+  const deploymentInfo = getDeploymentInfo(3);
+  //const host = getHost(3);
   const projectRoot = getProjectRoot(2);
 
-  if (!host) {
-    log('Invalid Host:', process.argv[2]);
-    usage();
-    process.exit(1);
-  }
+  //if (!host) {
+    //log('Invalid Host:', process.argv[2]);
+    //usage();
+    //process.exit(1);
+  //}
 
-  runtime.run(projectRoot, host, deploymentInfo.deployment,
+  runtime.run(projectRoot, deploymentInfo.deployment,
     deploymentInfo.isPr);
 }
 
